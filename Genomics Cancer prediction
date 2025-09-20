@@ -1,0 +1,212 @@
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+# Make sure the 'gene_expression.csv' file is uploaded to your Colab environment
+df = pd.read_csv('/content/gene_expression.csv')
+
+# --- Step 1: Initial Data Inspection ---
+print("--- Initial Data Inspection ---")
+print("\nFirst 5 rows of the dataset:")
+print(df.head())
+
+print("\nData types and non-null values:")
+print(df.info())
+
+# --- Step 2: Descriptive Statistics ---
+print("\n--- Descriptive Statistics ---")
+print("\nSummary statistics for numerical columns:")
+print(df.describe())
+
+# --- Step 3: Check for Missing Values ---
+print("\n--- Missing Values ---")
+print("\nNumber of missing values per column:")
+print(df.isnull().sum())
+
+# --- Step 4: Data Visualization ---
+print("\n--- Data Visualization ---")
+sns.set_style("whitegrid")
+
+# Create histograms for the gene expression values
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+sns.histplot(df['Gene One'], bins=20, kde=True, color='skyblue')
+plt.title('Distribution of Gene One Expression')
+plt.xlabel('Gene One Expression')
+plt.ylabel('Frequency')
+
+plt.subplot(1, 2, 2)
+sns.histplot(df['Gene Two'], bins=20, kde=True, color='salmon')
+plt.title('Distribution of Gene Two Expression')
+plt.xlabel('Gene Two Expression')
+plt.ylabel('Frequency')
+plt.tight_layout()
+plt.show()
+
+# Create a scatter plot to visualize the relationship between the genes,
+# colored by the presence of cancer
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x='Gene One', y='Gene Two', hue='Cancer Present', data=df, palette='viridis', style='Cancer Present')
+plt.title('Gene Expression of Gene One vs. Gene Two')
+plt.xlabel('Gene One Expression')
+plt.ylabel('Gene Two Expression')
+plt.legend(title='Cancer Present')
+plt.show()
+
+# Create a count plot for the 'Cancer Present' column
+plt.figure(figsize=(6, 4))
+sns.countplot(x='Cancer Present', data=df, palette='pastel')
+plt.title('Count of Cancer Presence')
+plt.xlabel('Cancer Present (0 = No, 1 = Yes)')
+plt.ylabel('Count')
+plt.show()
+--- Initial Data Inspection ---
+
+First 5 rows of the dataset:
+   Gene One  Gene Two  Cancer Present
+0       4.3       3.9               1
+1       2.5       6.3               0
+2       5.7       3.9               1
+3       6.1       6.2               0
+4       7.4       3.4               1
+
+Data types and non-null values:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 3000 entries, 0 to 2999
+Data columns (total 3 columns):
+ #   Column          Non-Null Count  Dtype  
+---  ------          --------------  -----  
+ 0   Gene One        3000 non-null   float64
+ 1   Gene Two        3000 non-null   float64
+ 2   Cancer Present  3000 non-null   int64  
+dtypes: float64(2), int64(1)
+memory usage: 70.4 KB
+None
+
+--- Descriptive Statistics ---
+
+Summary statistics for numerical columns:
+          Gene One     Gene Two  Cancer Present
+count  3000.000000  3000.000000     3000.000000
+mean      5.600133     5.410467        0.500000
+std       1.828388     1.729081        0.500083
+min       1.000000     1.000000        0.000000
+25%       4.300000     4.000000        0.000000
+50%       5.600000     5.400000        0.500000
+75%       6.900000     6.700000        1.000000
+max      10.000000    10.000000        1.000000
+
+--- Missing Values ---
+
+Number of missing values per column:
+Gene One          0
+Gene Two          0
+Cancer Present    0
+dtype: int64
+
+--- Data Visualization ---
+
+
+/tmp/ipython-input-3906463659.py:60: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.countplot(x='Cancer Present', data=df, palette='pastel')
+# Import necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset
+# Make sure the 'gene_expression.csv' file is uploaded to your Colab environment
+df = pd.read_csv('/content/gene_expression.csv')
+
+# --- Step 1: Prepare the Data ---
+# Define features (X) and target (y)
+# 'Gene One' and 'Gene Two' are our features
+# 'Cancer Present' is our target variable
+X = df[['Gene One', 'Gene Two']]
+y = df['Cancer Present']
+
+# Split the data into training and testing sets
+# We'll use 80% of the data for training and 20% for testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print("--- Data Preparation ---")
+print(f"Shape of training data (X_train): {X_train.shape}")
+print(f"Shape of testing data (X_test): {X_test.shape}")
+print("\n")
+
+# --- Step 2: Build and Train the Random Forest Model ---
+# Initialize the Random Forest Classifier
+# n_estimators: The number of trees in the forest
+# random_state: For reproducibility
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Train the model on the training data
+print("--- Training the Random Forest Model ---")
+model.fit(X_train, y_train)
+print("Model training complete.\n")
+
+# --- Step 3: Make Predictions ---
+# Use the trained model to predict on the test data
+y_pred = model.predict(X_test)
+
+# --- Step 4: Evaluate the Model's Performance ---
+print("--- Model Evaluation ---")
+
+# Calculate and print the accuracy of the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.4f}\n")
+
+# Generate and print a classification report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+# Visualize the Confusion Matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False,
+            xticklabels=['Predicted 0', 'Predicted 1'],
+            yticklabels=['Actual 0', 'Actual 1'])
+plt.title('Confusion Matrix for Cancer Prediction')
+plt.ylabel('Actual Label')
+plt.xlabel('Predicted Label')
+plt.show()
+
+# --- Step 5: Feature Importance ---
+# Find out which features contributed most to the prediction
+feature_importances = pd.Series(model.feature_importances_, index=X.columns)
+print("\n--- Feature Importance ---")
+print(feature_importances.sort_values(ascending=False))
+--- Data Preparation ---
+Shape of training data (X_train): (2400, 2)
+Shape of testing data (X_test): (600, 2)
+
+
+--- Training the Random Forest Model ---
+Model training complete.
+
+--- Model Evaluation ---
+Accuracy: 0.9050
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.91      0.91      0.91       328
+           1       0.90      0.89      0.90       272
+
+    accuracy                           0.91       600
+   macro avg       0.90      0.90      0.90       600
+weighted avg       0.90      0.91      0.90       600
+
+
+
+--- Feature Importance ---
+Gene Two    0.51801
+Gene One    0.48199
+dtype: float64
