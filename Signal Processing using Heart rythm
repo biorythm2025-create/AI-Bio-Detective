@@ -1,0 +1,203 @@
+from google.colab import files
+uploaded = files.upload()
+import json
+import pandas as pd
+import matplotlib.pyplot as plt
+from google.colab import files
+
+# ---- STEP 1: Upload File ----
+uploaded = files.upload()
+filename = "BLEData_Elga_2022_05_04.json"
+
+# ---- STEP 2: Load JSON ----
+with open(filename, "r") as f:
+    data = json.load(f)
+
+# ---- STEP 3: Extract User + Session Metadata ----
+session_info = data.get("session", {})
+user_info = data.get("user_metadata", {})
+
+print("📌 Session Name:", session_info.get("session_name"))
+print("📌 Created:", session_info.get("created"))
+print("📌 User:", user_info.get("firstName"), user_info.get("lastName"))
+print("📌 Age:", user_info.get("age"), " | Gender:", user_info.get("gender"))
+print("📌 Resting HR:", user_info.get("resting_hr"))
+
+# ---- STEP 4: Extract Activities ----
+activities = data.get("activities", [])
+df_activities = pd.DataFrame(activities)
+
+if not df_activities.empty:
+    df_activities["start_time"] = pd.to_datetime(df_activities["start_time"])
+    df_activities["end_time"] = pd.to_datetime(df_activities["end_time"])
+    print("\n✅ Activities DataFrame:\n", df_activities.head())
+
+    # Plot activity durations
+    plt.figure(figsize=(10,5))
+    plt.barh(df_activities["activity_component"], df_activities["activity_duration_in_min"], color="skyblue")
+    plt.xlabel("Duration (minutes)")
+    plt.ylabel("Activity")
+    plt.title("Activity Durations")
+    plt.show()
+else:
+    print("⚠ No activity data found")
+
+# ---- STEP 5: Extract Heart Rate (if available) ----
+# Many BLE JSONs have HR inside keys like 'hr_data', 'heart_rate', 'samples'
+# Adjust depending on your file structure
+hr_data = data.get("hr_data", None) or data.get("heart_rate", None) or data.get("samples", None)
+
+if hr_data:
+    df_hr = pd.DataFrame(hr_data)
+    if "time" in df_hr.columns:
+        df_hr["time"] = pd.to_datetime(df_hr["time"])
+    print("\n Heart Rate DataFrame:\n", df_hr.head())
+
+    # Plot heart rate
+    plt.figure(figsize=(12,6))
+    plt.plot(df_hr["time"], df_hr["value"], label="Heart Rate", color="red")
+    plt.xlabel("Time")
+    plt.ylabel("Heart Rate (bpm)")
+    plt.title("Heart Rate vs Time")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+else:
+    print("No direct heart rate data found in this JSON (only session + activities).")
+Upload widget is only available when the cell has been executed in the current browser session. Please rerun this cell to enable.
+Saving BLEData_Elga_2022_05_04.json to BLEData_Elga_2022_05_04 (1).json
+Session Name: session 1 2022-05-04
+Created: 2022-05-04 06:36:49.024189+0530
+User: Elga Thomas
+Age: 19  | Gender: Female
+Resting HR: 65
+
+Activities DataFrame:
+                  start_time                  end_time activity_component  \
+0 2022-05-04 03:22:00+00:00 2022-05-04 03:36:00+00:00     Cool Down Jog    
+1 2022-05-04 03:12:00+00:00 2022-05-04 03:13:00+00:00              200m    
+2 2022-05-04 03:07:00+00:00 2022-05-04 03:08:00+00:00               200m   
+3 2022-05-04 03:03:00+00:00 2022-05-04 03:04:00+00:00               200m   
+4 2022-05-04 02:59:00+00:00 2022-05-04 03:00:00+00:00           200m Run   
+
+         activity  activity_duration_in_min activity_img_url  stress  
+0  Cool Down Jog                         14             None     1.0  
+1           200m                          1             None     1.0  
+2            200m                         1             None     1.0  
+3            200m                         1             None     1.0  
+4        200m Run                         1             None     1.0  
+from google.colab import files
+uploaded = files.upload()
+Upload widget is only available when the cell has been executed in the current browser session. Please rerun this cell to enable.
+Saving BLEData_mayukha_2022_04_25.json to BLEData_mayukha_2022_04_25.json
+import json
+import pandas as pd
+from google.colab import files
+
+# Step 1: Upload JSON file from PC
+uploaded = files.upload()
+
+# Replace with your filename
+filename = "BLEData_mayukha_2022_04_25.json"
+
+# Step 2: Load JSON
+with open(filename, "r") as f:
+    data = json.load(f)
+
+# Step 3: Extract session info
+session = data.get("session", {})
+user_params = session.get("user_parameters", {})
+user_meta = data.get("user_metadata", {})
+
+print("Session Info:")
+print(f" Session Name   : {session.get('session_name')}")
+print(f" Start Time UTC : {data.get('Start_date_time')}")
+print(f" End Time       : {data.get('session_finish_time')}")
+print(f" Timezone       : {data.get('timezone')}")
+print(f" Firmware Ver   : {session.get('firmware_ver')}")
+print()
+
+print("User Info:")
+print(f" Name     : {user_meta.get('firstName')} {user_meta.get('lastName')}")
+print(f" Age      : {user_meta.get('age')} years")
+print(f" Gender   : {user_meta.get('gender')}")
+print(f" Height   : {user_meta.get('heightCm')} cm")
+print(f" Weight   : {user_meta.get('weightKg')} kg")
+print(f" Rest HR  : {user_meta.get('resting_hr')} bpm")
+print()
+
+# Step 4: Extract activities
+activities = data.get("activities", [])
+
+if activities:
+    df = pd.DataFrame(activities)
+    print("Activities Overview:")
+    print(df[["start_time", "end_time", "activity", "activity_duration_in_min", "stress"]])
+
+    # Example summary
+    total_duration = df["activity_duration_in_min"].sum()
+    print(f"\n⏱ Total Active Duration: {total_duration} minutes")
+
+    # Group by activity type
+    activity_summary = df.groupby("activity")["activity_duration_in_min"].sum()
+    print("\n Time spent per activity:")
+    print(activity_summary)
+
+    # Plot activity durations
+    import matplotlib.pyplot as plt
+    df.groupby("activity")["activity_duration_in_min"].sum().plot(kind="bar")
+    plt.title("Activity Duration (minutes)")
+    plt.ylabel("Minutes")
+    plt.show()
+else:
+    print(" No activities found in JSON")
+Upload widget is only available when the cell has been executed in the current browser session. Please rerun this cell to enable.
+Saving BLEData_mayukha_2022_04_25.json to BLEData_mayukha_2022_04_25 (1).json
+Session Info:
+ Session Name   : session 1 2022-04-25
+ Start Time UTC : 2022-04-25T00:59:25Z
+ End Time       : 2022-04-25T03:27:24Z
+ Timezone       : UTC+05:30
+ Firmware Ver   : 2.9.2
+
+User Info:
+ Name     : mayukha Vinod
+ Age      : 13 years
+ Gender   : Female
+ Height   : 162.0 cm
+ Weight   : 48.6 kg
+ Rest HR  : 65 bpm
+
+Activities Overview:
+             start_time              end_time             activity  \
+0  2022-04-25T03:16:00Z  2022-04-25T03:17:00Z                  200   
+1  2022-04-25T03:10:00Z  2022-04-25T03:11:00Z                  400   
+2  2022-04-25T02:08:00Z  2022-04-25T02:16:00Z                  2km   
+3  2022-04-25T01:58:00Z  2022-04-25T02:06:00Z                  Abc   
+4  2022-04-25T01:51:00Z  2022-04-25T01:55:00Z  Physical activities   
+5  2022-04-25T01:25:00Z  2022-04-25T01:50:00Z  Physical activities   
+6  2022-04-25T01:09:00Z  2022-04-25T01:24:00Z                 None   
+
+   activity_duration_in_min  stress  
+0                         1     1.0  
+1                         1     1.0  
+2                         8     1.0  
+3                         8     1.0  
+4                         4     1.0  
+5                        25     1.0  
+6                        15     1.0  
+
+Total Active Duration: 62 minutes
+
+Time spent per activity:
+activity
+200                     1
+2km                     8
+400                     1
+Abc                     8
+None                   15
+Physical activities    29
+Name: activity_duration_in_min, dtype: int64
+
+
+
