@@ -1,0 +1,540 @@
+import kagglehub
+
+# Download latest version
+path = kagglehub.dataset_download("vuppalaadithyasairam/bone-fracture-detection-using-xrays")
+
+print("Path to dataset files:", path)
+Downloading from https://www.kaggle.com/api/v1/datasets/download/vuppalaadithyasairam/bone-fracture-detection-using-xrays?dataset_version_number=1...
+100%|██████████| 172M/172M [00:01<00:00, 179MB/s]Extracting files...
+
+Path to dataset files: /root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from PIL import Image, ImageFilter
+
+def process_image(input_image_path, output_image_path):
+    """
+    Opens an image, converts it to grayscale, applies a blur filter,
+    and saves the modified image.
+
+    Args:
+        input_image_path (str): The path to the input image file.
+        output_image_path (str): The path where the processed image will be saved.
+    """
+    try:
+        # Open the image
+        img = Image.open(input_image_path)
+        print(f"Image '{input_image_path}' opened successfully. Original size: {img.size}")
+
+        # Convert to grayscale
+        grayscale_img = img.convert("L")
+        print("Image converted to grayscale.")
+
+        # Apply a blur filter
+        blurred_img = grayscale_img.filter(ImageFilter.BLUR)
+        print("Blur filter applied.")
+
+        # Save the processed image
+        blurred_img.save(output_image_path)
+        print(f"Processed image saved to '{output_image_path}'.")
+
+    except FileNotFoundError:
+        print(f"Error: Input image file not found at '{input_image_path}'")
+    except Exception as e:
+        print(f"An error occurred during image processing: {e}")
+
+if __name__ == "__main__":
+    # Example usage:
+    # Create a dummy image file for testing if you don't have one
+    try:
+        dummy_img = Image.new('RGB', (200, 150), color = 'red')
+        dummy_img.save("example_input.png")
+        print("Created 'example_input.png' for demonstration.")
+    except Exception as e:
+        print(f"Could not create dummy image: {e}")
+
+    input_file = "/content/10-rotated1.jpg"  # Replace with your image file
+    output_file = "processed_image.png"
+
+    process_image(input_file, output_file)
+Created 'example_input.png' for demonstration.
+Image '/content/10-rotated1.jpg' opened successfully. Original size: (224, 224)
+Image converted to grayscale.
+Blur filter applied.
+Processed image saved to 'processed_image.png'.
+import os
+print(os.listdir('/content/'))
+['.config', '10-rotated1.jpg', 'example_input.png', 'processed_image.png', 'sample_data']
+from PIL import Image
+import matplotlib.pyplot as plt
+
+# Path to the image file
+image_path = '/content/10-rotated1.jpg'
+
+try:
+    # Open the image
+    img = Image.open(image_path)
+
+    # Display the image
+    plt.imshow(img)
+    plt.title("Opened Image")
+    plt.axis('off') # Hide axes
+    plt.show()
+
+    print(f"Image '{image_path}' opened and displayed successfully.")
+
+except FileNotFoundError:
+    print(f"Error: Image file not found at '{image_path}'")
+except Exception as e:
+    print(f"An error occurred while opening or displaying the image: {e}")
+Image '/content/10-rotated1.jpg' opened and displayed successfully.
+import os
+
+# The path to the dataset files was printed in the first cell.
+# We can access it from the output of the first cell.
+dataset_path = '/root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1'
+
+# List all files and directories in the dataset path
+print(os.listdir(dataset_path))
+['archive (6)']
+import os
+
+dataset_path = '/root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1'
+archive_path = os.path.join(dataset_path, 'archive (6)')
+
+# List all files and directories inside the archive directory
+print(os.listdir(archive_path))
+['val', 'train']
+import os
+
+dataset_path = '/root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1'
+archive_path = os.path.join(dataset_path, 'archive (6)')
+train_path = os.path.join(archive_path, 'train')
+
+# List all files and directories inside the train directory
+print(os.listdir(train_path))
+['not fractured', 'fractured']
+import os
+
+dataset_path = '/root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1'
+archive_path = os.path.join(dataset_path, 'archive (6)')
+train_path = os.path.join(archive_path, 'train')
+fractured_path = os.path.join(train_path, 'fractured')
+not_fractured_path = os.path.join(train_path, 'not fractured')
+
+# List the first 5 files in the 'fractured' directory
+print("Files in 'fractured' directory (first 5):")
+print(os.listdir(fractured_path)[:5])
+
+# List the first 5 files in the 'not fractured' directory
+print("\nFiles in 'not fractured' directory (first 5):")
+print(os.listdir(not_fractured_path)[:5])
+Files in 'fractured' directory (first 5):
+['109-rotated1-rotated3-rotated2.jpg', '71-rotated2.jpg', '91-rotated3-rotated1-rotated3.jpg', '67-rotated2-rotated1-rotated2.jpg', '19-rotated2-rotated1-rotated1.jpg']
+
+Files in 'not fractured' directory (first 5):
+['14-rotated3-rotated2-rotated2-rotated1.jpg', '67-rotated2-rotated1-rotated2.jpg', '19-rotated2-rotated1-rotated1.jpg', '62-rotated3-rotated2-rotated1-rotated1.jpg', '19-rotated3-rotated3-rotated1-rotated1.jpg']
+
+from PIL import Image
+import matplotlib.pyplot as plt
+import os
+
+dataset_path = '/root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1'
+archive_path = os.path.join(dataset_path, 'archive (6)')
+train_path = os.path.join(archive_path, 'train')
+fractured_path = os.path.join(train_path, 'fractured')
+not_fractured_path = os.path.join(train_path, 'not fractured')
+
+# Get a few sample image paths
+fractured_sample_images = [os.path.join(fractured_path, f) for f in os.listdir(fractured_path)[:2]]
+not_fractured_sample_images = [os.path.join(not_fractured_path, f) for f in os.listdir(not_fractured_path)[:2]]
+
+all_sample_images = fractured_sample_images + not_fractured_sample_images
+
+# Display sample images and print properties
+plt.figure(figsize=(10, 8))
+for i, img_path in enumerate(all_sample_images):
+    try:
+        img = Image.open(img_path)
+
+        plt.subplot(2, 2, i + 1)
+        plt.imshow(img, cmap='gray') # Assuming X-rays are grayscale
+        plt.title(f"Sample Image {i+1}\n({os.path.basename(os.path.dirname(img_path))})")
+        plt.axis('off')
+
+        print(f"Image: {os.path.basename(img_path)}")
+        print(f"  Dimensions: {img.size}")
+        print(f"  Color Mode: {img.mode}")
+        print("-" * 20)
+
+    except FileNotFoundError:
+        print(f"Error: Image file not found at '{img_path}'")
+    except Exception as e:
+        print(f"An error occurred while processing image '{img_path}': {e}")
+
+plt.tight_layout()
+plt.show()
+Image: 109-rotated1-rotated3-rotated2.jpg
+  Dimensions: (224, 224)
+  Color Mode: RGB
+--------------------
+Image: 71-rotated2.jpg
+  Dimensions: (224, 224)
+  Color Mode: RGB
+--------------------
+Image: 14-rotated3-rotated2-rotated2-rotated1.jpg
+  Dimensions: (224, 224)
+  Color Mode: RGB
+--------------------
+Image: 67-rotated2-rotated1-rotated2.jpg
+  Dimensions: (224, 224)
+  Color Mode: RGB
+--------------------
+import os
+
+# The path to the dataset files was identified during EDA.
+dataset_path = '/root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1'
+archive_path = os.path.join(dataset_path, 'archive (6)')
+
+# Define paths for training and validation directories
+train_dir = os.path.join(archive_path, 'train')
+validation_dir = os.path.join(archive_path, 'val')
+
+# Set image dimensions and batch size
+img_height, img_width = 224, 224
+batch_size = 32
+
+print(f"Training directory: {train_dir}")
+print(f"Validation directory: {validation_dir}")
+print(f"Image dimensions: {img_height}x{img_width}")
+print(f"Batch size: {batch_size}")
+Training directory: /root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1/archive (6)/train
+Validation directory: /root/.cache/kagglehub/datasets/vuppalaadithyasairam/bone-fracture-detection-using-xrays/versions/1/archive (6)/val
+Image dimensions: 224x224
+Batch size: 32
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# Create an ImageDataGenerator for training with augmentation
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=20,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
+
+# Create an ImageDataGenerator for validation without augmentation
+validation_datagen = ImageDataGenerator(rescale=1./255)
+
+# Create data flow objects from the directories
+train_generator = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(img_height, img_width),
+    batch_size=batch_size,
+    class_mode='binary'
+)
+
+validation_generator = validation_datagen.flow_from_directory(
+    validation_dir,
+    target_size=(img_height, img_width),
+    batch_size=batch_size,
+    class_mode='binary'
+)
+
+print("Data generators and flow objects created.")
+Found 8863 images belonging to 2 classes.
+Found 600 images belonging to 2 classes.
+Data generators and flow objects created.
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.metrics import Precision, Recall
+
+# Define the CNN model
+model = Sequential([
+    Conv2D(32, (3, 3), activation='relu', input_shape=(img_height, img_width, 3)),
+    MaxPooling2D((2, 2)),
+    Conv2D(64, (3, 3), activation='relu'),
+    MaxPooling2D((2, 2)),
+    Conv2D(128, (3, 3), activation='relu'),
+    MaxPooling2D((2, 2)),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dense(1, activation='sigmoid') # Binary classification
+])
+
+# Compile the model
+model.compile(optimizer=Adam(),
+              loss='binary_crossentropy',
+              metrics=['accuracy', Precision(), Recall()])
+
+model.summary()
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/convolutional/base_conv.py:113: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+Model: "sequential"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type)                    ┃ Output Shape           ┃       Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ conv2d (Conv2D)                 │ (None, 222, 222, 32)   │           896 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d (MaxPooling2D)    │ (None, 111, 111, 32)   │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_1 (Conv2D)               │ (None, 109, 109, 64)   │        18,496 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_1 (MaxPooling2D)  │ (None, 54, 54, 64)     │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_2 (Conv2D)               │ (None, 52, 52, 128)    │        73,856 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_2 (MaxPooling2D)  │ (None, 26, 26, 128)    │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (Flatten)               │ (None, 86528)          │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense (Dense)                   │ (None, 128)            │    11,075,712 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (Dense)                 │ (None, 1)              │           129 │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+ Total params: 11,169,089 (42.61 MB)
+ Trainable params: 11,169,089 (42.61 MB)
+ Non-trainable params: 0 (0.00 B)
+import matplotlib.pyplot as plt
+import glob
+from PIL import Image
+import random
+
+# Step 1: Find image files in your dataset directory ---
+# This assumes your image files are in a folder named 'xray_data'
+# Adjust the pattern to match your file types (e.g., '*.png', '*.dcm')
+image_files = glob.glob('/content/10-rotated1.jpg')
+print(f"Found {len(image_files)} images.")
+
+# Step 2: Select and display a random subset of images ---
+if len(image_files) > 0:
+    num_images_to_display = min(15, len(image_files))
+    random_images = random.sample(image_files, num_images_to_display)
+
+    fig, axes = plt.subplots(3, 5, figsize=(15, 10))
+    axes = axes.flatten()
+
+    for i, ax in enumerate(axes):
+        if i < len(random_images):
+            try:
+                img = Image.open(random_images[i])
+                ax.imshow(img, cmap='gray')
+                ax.set_title(random_images[i].split('/')[-1])
+                ax.axis('off')
+            except Exception as e:
+                ax.set_title(f"Error loading: {e}")
+                ax.axis('off')
+        else:
+            ax.axis('off')  # Hide empty subplots
+
+    plt.tight_layout()
+    plt.show()
+else:
+    print("No images found. Please check your file paths.")
+Found 1 images.
+# Import necessary libraries
+from sklearn.metrics import accuracy_score, precision_recall_curve, auc, confusion_matrix
+# For mAP, you'd typically use a dedicated library like COCO evaluation or Ultralytics
+# from pycocotools.coco import COCO # For COCO mAP evaluation
+# from ultralytics.utils.metrics import MeanAveragePrecision as MAP # For Ultralytics mAP evaluation
+
+# --- Example for Accuracy ---
+# True labels for your dataset
+y_true = [0, 1, 0, 1, 1, 0]
+# Predicted labels from your model
+y_pred = [0, 1, 1, 1, 0, 0]
+
+# Calculate Accuracy
+accuracy = accuracy_score(y_true, y_pred)
+print(f"Accuracy: {accuracy:.4f}")
+
+
+
+# --- Example for Precision-Recall Curve (part of mAP) ---
+# This is a simplified example, for actual mAP, you need confidence scores and IoU thresholds
+
+# True labels (binary)
+y_true_bin = [0, 0, 1, 1]
+# Predicted probabilities or confidence scores
+y_scores = [0.1, 0.4, 0.35, 0.8] # Example scores
+
+# Calculate precision-recall curve
+precision, recall, thresholds = precision_recall_curve(y_true_bin, y_scores)
+
+# Calculate the Area Under the Curve (AUC) for the PR curve
+# This is the Average Precision (AP) for a single class or IoU threshold
+ap = auc(recall, precision)
+print(f"\nAverage Precision (AP): {ap:.4f}")
+
+# --- For Mean Average Precision (mAP) ---
+# mAP is a more complex metric, especially for object detection.
+# It requires calculating Average Precision (AP) across multiple IoU thresholds and classes.
+
+# You would typically use a library for this. Here's how it might look conceptually:
+
+# Conceptual Outline for mAP:
+# 1. For each image and object class:
+#    a. Calculate IoU (Intersection over Union) for predicted vs. ground truth boxes.
+#    b. Determine True Positives (TP) and False Positives (FP) based on an IoU threshold (e.g., 0.5).
+#    c. Sort all predictions for the class by confidence score.
+#    d. Calculate the Precision-Recall curve and its area (Average Precision) for that class and IoU threshold.
+# 2. Calculate mAP by averaging APs:
+#    a. For mAP@[.5:.95] (like COCO): Average APs across 10 IoU thresholds (0.5 to 0.95 in 0.05 steps).
+#    b. For mAP@[.5]: Average AP across all classes at an IoU threshold of 0.5.
+
+# Example using a hypothetical mAP library:
+# from mAP_library import calculate_map
+#
+# predictions = [...] # Model's predicted bounding boxes, scores, class labels
+# ground_truth = [...] # Ground truth boxes and labels
+# iou_thresholds = [0.5, 0.55, ..., 0.95]
+#
+# mAP_value = calculate_map(predictions, ground_truth, iou_thresholds=iou_thresholds)
+# print(f"mAP: {mAP_value:.4f}")
+Accuracy: 0.8667
+
+Average Precision (AP): 0.8917
+import numpy as np
+
+def calculate_iou(box_1, box_2):
+    """
+    Calculates the Intersection over Union (IoU) of two bounding boxes.
+    Boxes are expected in [x_min, y_min, x_max, y_max] format.
+    """
+    # Determine the coordinates of the intersection rectangle
+    x_min_inter = max(box_1[0], box_2[0])
+    y_min_inter = max(box_1[1], box_2[1])
+    x_max_inter = min(box_1[2], box_2[2])
+    y_max_inter = min(box_1[3], box_2[3])
+
+    # Calculate the area of the intersection rectangle
+    inter_width = max(0, x_max_inter - x_min_inter)
+    inter_height = max(0, y_max_inter - y_min_inter)
+    inter_area = inter_width * inter_height
+
+    # Calculate the area of both bounding boxes
+    box_1_area = (box_1[2] - box_1[0]) * (box_1[3] - box_1[1])
+    box_2_area = (box_2[2] - box_2[0]) * (box_2[3] - box_2[1])
+
+    # Calculate the union area
+    union_area = float(box_1_area + box_2_area - inter_area)
+
+    # Compute the IoU
+    iou = inter_area / union_area if union_area > 0 else 0.0
+    return iou
+
+def compute_ap(gt_boxes, pred_boxes, pred_scores, iou_threshold=0.5):
+    """
+    Computes Average Precision (AP) for a single class.
+    gt_boxes: List of ground truth bounding boxes (e.g., [[x_min, y_min, x_max, y_max], ...])
+    pred_boxes: List of predicted bounding boxes
+    pred_scores: List of confidence scores for predicted boxes
+    iou_threshold: IoU threshold for considering a detection as true positive
+    """
+    # Sort predictions by confidence score in descending order
+    sorted_indices = np.argsort(pred_scores)[::-1]
+    pred_boxes = np.array(pred_boxes)[sorted_indices]
+
+    num_gt = len(gt_boxes)
+    true_positives = np.zeros(len(pred_boxes))
+    false_positives = np.zeros(len(pred_boxes))
+
+    # Keep track of matched ground truth boxes to avoid double counting
+    matched_gt = [False] * num_gt
+
+    for i, pred_box in enumerate(pred_boxes):
+        max_iou = -1
+        max_iou_gt_idx = -1
+
+        for j, gt_box in enumerate(gt_boxes):
+            if not matched_gt[j]:
+                iou = calculate_iou(pred_box, gt_box)
+                if iou > max_iou:
+                    max_iou = iou
+                    max_iou_gt_idx = j
+
+        if max_iou >= iou_threshold:
+            true_positives[i] = 1
+            matched_gt[max_iou_gt_idx] = True
+        else:
+            false_positives[i] = 1
+
+    # Calculate cumulative true positives and false positives
+    cumulative_tp = np.cumsum(true_positives)
+    cumulative_fp = np.cumsum(false_positives)
+
+    # Calculate precision and recall
+    precision = cumulative_tp / (cumulative_tp + cumulative_fp)
+    recall = cumulative_tp / num_gt if num_gt > 0 else np.zeros_like(cumulative_tp)
+
+    # Compute AP using the 11-point interpolation method (or a more precise method)
+    # For simplicity, we'll use a basic numerical integration here
+    ap = 0
+    if len(recall) > 0 and len(precision) > 0:
+        for t in np.arange(0., 1.1, 0.1): # 11 recall points
+            p_interp = 0
+            for i in range(len(recall) - 1, -1, -1):
+                if recall[i] >= t:
+                    p_interp = max(p_interp, precision[i])
+            ap += p_interp / 11.0
+    return ap
+
+# Example usage in Colab:
+# Simulate some data
+gt_boxes_class1 = [[10, 10, 50, 50], [60, 60, 100, 100]]
+pred_boxes_class1 = [[12, 12, 52, 52], [65, 65, 95, 95], [20, 20, 40, 40]]
+pred_scores_class1 = [0.9, 0.8, 0.3]
+
+gt_boxes_class2 = [[150, 150, 200, 200]]
+pred_boxes_class2 = [[155, 155, 195, 195], [10, 10, 20, 20]]
+pred_scores_class2 = [0.95, 0.1]
+
+# Calculate AP for each class
+ap_class1 = compute_ap(gt_boxes_class1, pred_boxes_class1, pred_scores_class1)
+ap_class2 = compute_ap(gt_boxes_class2, pred_boxes_class2, pred_scores_class2)
+
+# Calculate mAP
+mAP = (ap_class1 + ap_class2) / 2
+
+print(f"AP for Class 1: {ap_class1:.4f}")
+print(f"AP for Class 2: {ap_class2:.4f}")
+print(f"Mean Average Precision (mAP): {mAP:.4f}")
+AP for Class 1: 1.0000
+AP for Class 2: 1.0000
+Mean Average Precision (mAP): 1.0000
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Generate some sample data
+np.random.seed(42)  # for reproducibility
+X = np.linspace(0, 10, 100)  # 100 points between 0 and 10
+y_true = 2 * X + 1 + np.random.normal(0, 2, 100)  # True values with some noise
+
+# 2. Simulate a simple prediction (e.g., a linear regression model)
+# In a real scenario, this would come from a trained model's .predict() method
+y_pred = 2.1 * X + 0.8  # A slightly off prediction
+
+# 3. Visualize the true values and the predictions
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y_true, label='True Values', alpha=0.7)
+plt.plot(X, y_pred, color='red', linestyle='--', label='Predictions')
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.title('True Values vs. Predictions')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# You can also visualize residuals (the difference between true and predicted)
+residuals = y_true - y_pred
+plt.figure(figsize=(10, 6))
+plt.scatter(X, residuals, label='Residuals', alpha=0.7)
+plt.axhline(0, color='gray', linestyle='--')
+plt.xlabel('X-axis')
+plt.ylabel('Residuals')
+plt.title('Residual Plot')
+plt.legend()
+plt.grid(True)
+plt.show()
