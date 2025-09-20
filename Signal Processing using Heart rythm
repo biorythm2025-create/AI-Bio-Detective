@@ -17,11 +17,11 @@ with open(filename, "r") as f:
 session_info = data.get("session", {})
 user_info = data.get("user_metadata", {})
 
-print("📌 Session Name:", session_info.get("session_name"))
-print("📌 Created:", session_info.get("created"))
-print("📌 User:", user_info.get("firstName"), user_info.get("lastName"))
-print("📌 Age:", user_info.get("age"), " | Gender:", user_info.get("gender"))
-print("📌 Resting HR:", user_info.get("resting_hr"))
+print("Session Name:", session_info.get("session_name"))
+print("Created:", session_info.get("created"))
+print("User:", user_info.get("firstName"), user_info.get("lastName"))
+print("Age:", user_info.get("age"), " | Gender:", user_info.get("gender"))
+print("Resting HR:", user_info.get("resting_hr"))
 
 # ---- STEP 4: Extract Activities ----
 activities = data.get("activities", [])
@@ -30,7 +30,7 @@ df_activities = pd.DataFrame(activities)
 if not df_activities.empty:
     df_activities["start_time"] = pd.to_datetime(df_activities["start_time"])
     df_activities["end_time"] = pd.to_datetime(df_activities["end_time"])
-    print("\n✅ Activities DataFrame:\n", df_activities.head())
+    print("\nActivities DataFrame:\n", df_activities.head())
 
     # Plot activity durations
     plt.figure(figsize=(10,5))
